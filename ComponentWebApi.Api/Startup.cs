@@ -1,9 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using ComponentWebApi.Api.Extensions;
 using ComponentWebApi.Repository;
+using ComponentWebApi.Repository.Repositories;
+using ComponentWebApi.Repository.UnitOfWorks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +32,14 @@ namespace ComponentWebApi.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            //注入Uow依赖
+            services.AddScoped<IUnitOfWork, UnitOfWork<MyDbContext>>();
+            //注入泛型仓储
+            services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
+            
+            //依赖注入
+            services.AddAutoDI();
             
             //Swagger
             services.AddSwaggerSetup();

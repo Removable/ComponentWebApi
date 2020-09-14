@@ -20,8 +20,8 @@
     "ComponentWebApi.Api": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "weatherforecast",
-      "applicationUrl": "http://localhost:5000",
+      "launchUrl": "doc",
+      "applicationUrl": "http://localhost:10267",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace ComponentsBlog.Repository.UnitOfWorks
+namespace ComponentWebApi.Repository.UnitOfWorks
 {
     public class UnitOfWork<TDbContext> : IUnitOfWork where TDbContext : DbContext
     {

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace ComponentsBlog.Repository.UnitOfWorks
+namespace ComponentWebApi.Repository.UnitOfWorks
 {
     public interface IUnitOfWork
     {

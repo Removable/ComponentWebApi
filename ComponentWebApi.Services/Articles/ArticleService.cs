@@ -1,6 +1,10 @@
-﻿using ComponentsBlog.Repository.UnitOfWorks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using ComponentWebApi.Model.Articles;
 using ComponentWebApi.Repository.Repositories;
+using ComponentWebApi.Repository.UnitOfWorks;
+using Microsoft.EntityFrameworkCore;
 
 namespace ComponentWebApi.Services.Articles
 {
@@ -13,6 +17,15 @@ namespace ComponentWebApi.Services.Articles
         {
             _articleRepository = articleRepository;
             _unitOfWork = unitOfWork;
+        }
+
+        public async Task<List<Article>> GetAllArticlesTitle()
+        {
+            var queryable = await _articleRepository.GetAll().ToListAsync();
+            
+            // var list = await queryable.Paging(pageIndex, pageSize).ToListAsync();
+            // return new Page<Article>(list, queryable.Count(), pageIndex, pageSize);
+            return queryable;
         }
     }
 }

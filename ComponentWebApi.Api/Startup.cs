@@ -4,7 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using AspectCore.Configuration;
+using AspectCore.Extensions.DependencyInjection;
 using ComponentWebApi.Api.Extensions;
+using ComponentWebApi.Api.Filter;
 using ComponentWebApi.Repository;
 using ComponentWebApi.Repository.Repositories;
 using ComponentWebApi.Repository.UnitOfWorks;
@@ -46,6 +49,9 @@ namespace ComponentWebApi.Api
             
             //注入DbContext
             services.AddDbContext<MyDbContext>(options => options.UseSqlite(Configuration["ConnectionStrings:Sqlite"]));
+
+            // 設定動態代理
+            services.ConfigureDynamicProxy(config => { config.Interceptors.AddTyped<ServiceAopAttribute>(Predicates.ForService("*Service")); });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -17,7 +17,6 @@ namespace ComponentWebApi.Api.Extensions
         {
             #region 自动依赖注入
 
-            //services.AddScoped<IUserService, UserService>();
             var baseType = typeof(IBaseService);
             var path = AppDomain.CurrentDomain.RelativeSearchPath ?? AppDomain.CurrentDomain.BaseDirectory;
             var referencedAssemblies = System.IO.Directory.GetFiles(path, "*.dll").Select(Assembly.LoadFrom).ToArray();

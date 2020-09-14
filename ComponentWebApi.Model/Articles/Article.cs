@@ -11,5 +11,10 @@ namespace ComponentWebApi.Model.Articles
         /// ID
         /// </summary>
         public int Id { get; set; }
+        
+        /// <summary>
+        /// 标题
+        /// </summary>
+        public string Title { get; set; }
     }
 }

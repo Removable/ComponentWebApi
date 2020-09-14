@@ -11,9 +11,9 @@ namespace ComponentWebApi.Repository.Repositories
     {
         private readonly MyDbContext _dbContext;
 
-        public Repository(MyDbContext dbDbContext)
+        public Repository(MyDbContext dbContext)
         {
-            _dbContext = dbDbContext;
+            _dbContext = dbContext;
         }
 
         protected DbSet<TEntity> Table => _dbContext.Set<TEntity>();
@@ -23,10 +23,28 @@ namespace ComponentWebApi.Repository.Repositories
             return await Table.FindAsync(id);
         }
 
-        public async Task<TEntity> InsertAsync(TEntity entity)
+        public async Task<TEntity[]> GetAsync(TKey[] ids)
         {
-            var result = await Table.AddAsync(entity);
-            return result.Entity;
+            return await Table.Where(i => ids.Contains(i.Id)).ToArrayAsync();
+        }
+
+        public TEntity Insert(TEntity entity)
+        {
+            AttachIfNot(entity);
+            _dbContext.Entry(entity).State = EntityState.Added;
+
+            return entity;
+        }
+
+        public TEntity[] Insert(TEntity[] entityArray)
+        {
+            AttachIfNot(entityArray);
+            foreach (var entity in entityArray)
+            {
+                _dbContext.Entry(entity).State = EntityState.Added;
+            }
+
+            return entityArray;
         }
 
         public TEntity Update(TEntity entity)
@@ -37,13 +55,33 @@ namespace ComponentWebApi.Repository.Repositories
             return entity;
         }
 
+        public TEntity[] Update(TEntity[] entityArray)
+        {
+            AttachIfNot(entityArray);
+            foreach (var entity in entityArray)
+            {
+                _dbContext.Entry(entity).State = EntityState.Modified;
+            }
+
+            return entityArray;
+        }
+
         public void Delete(TEntity entity)
         {
             AttachIfNot(entity);
-            Table.Remove(entity);
+            _dbContext.Entry(entity).State = EntityState.Deleted;
         }
 
-        public async void Delete(TKey id)
+        public void Delete(TEntity[] entityArray)
+        {
+            AttachIfNot(entityArray);
+            foreach (var entity in entityArray)
+            {
+                _dbContext.Entry(entity).State = EntityState.Deleted;
+            }
+        }
+
+        public async Task Delete(TKey id)
         {
             var entity = GetFromChangeTrackerOrNull(id);
             if (entity != null)
@@ -53,7 +91,26 @@ namespace ComponentWebApi.Repository.Repositories
             }
 
             entity = await GetAsync(id);
-            if (entity != null) Delete(entity);
+            if (entity != null)
+            {
+                Delete(entity);
+            }
+        }
+
+        public async Task Delete(params TKey[] ids)
+        {
+            var entityArray = GetFromChangeTrackerOrNull(ids).ToArray();
+            if (entityArray.Length > 0)
+            {
+                Delete(entityArray);
+                return;
+            }
+
+            entityArray = await GetAsync(ids);
+            if (entityArray.Length > 0)
+            {
+                Delete(entityArray);
+            }
         }
 
         public IQueryable<TEntity> GetAll()
@@ -69,16 +126,31 @@ namespace ComponentWebApi.Repository.Repositories
             Table.Attach(entity);
         }
 
+        protected virtual void AttachIfNot(TEntity[] entityArray)
+        {
+            var entryList = _dbContext.ChangeTracker.Entries().Where(ent => entityArray.Contains((TEntity)ent.Entity));
+            if (!entryList.Any()) return;
+
+            Table.AttachRange(entityArray);
+        }
+
         private TEntity GetFromChangeTrackerOrNull(TKey id)
         {
-            var entry = _dbContext.ChangeTracker.Entries()
-                .FirstOrDefault(
-                    ent =>
-                        ent.Entity is TEntity &&
-                        EqualityComparer<TKey>.Default.Equals(id, ((TEntity) ent.Entity).Id)
-                );
+            var entry = _dbContext.ChangeTracker.Entries().FirstOrDefault(ent =>
+                ent.Entity is TEntity entity && EqualityComparer<TKey>.Default.Equals(id, entity.Id));
 
             return entry?.Entity as TEntity;
+        }
+
+        private IEnumerable<TEntity> GetFromChangeTrackerOrNull(TKey[] ids)
+        {
+            var entryEnumerable = _dbContext.ChangeTracker.Entries()
+                .Where(ent => ent.Entity is TEntity entity && ids.Contains(entity.Id));
+
+            foreach (var entityEntry in entryEnumerable)
+            {
+                yield return entityEntry?.Entity as TEntity;
+            }
         }
     }
 }

@@ -11,38 +11,39 @@ namespace ComponentWebApi.Api.Controllers
     public class ArticleController : WebApiControllerBase
     {
         private readonly IArticleService _articleService;
-        
+
         public ArticleController(IArticleService articleService)
         {
             _articleService = articleService;
         }
-        
+
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll()
         {
             var a = await _articleService.GetAllArticlesTitle();
             return Success(a);
         }
-        
+
         [HttpGet]
-        public string Get(int type)
+        public async Task<IActionResult> Get(int type)
         {
-            if(type == 1)
+            if (type == 1)
             {
-                return _articleService.GetCurrentUtcTime();
+                return Success(await _articleService.GetAll());
             }
-            else if(type == 2)
+            else if (type == 2)
             {
-                _articleService.DeleteSomething(1);
-                return "ok";
+                _articleService.Delete(2);
+                return Success();
             }
-            else if(type == 3)
+            else if (type == 3)
             {
-                return _articleService.PutSomething("123");
+                await _articleService.Add();
+                return Success();
             }
             else
             {
-                return "other";
+                return Fail("错误");
             }
         }
     }

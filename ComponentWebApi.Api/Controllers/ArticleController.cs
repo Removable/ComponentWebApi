@@ -23,5 +23,27 @@ namespace ComponentWebApi.Api.Controllers
             var a = await _articleService.GetAllArticlesTitle();
             return Success(a);
         }
+        
+        [HttpGet]
+        public string Get(int type)
+        {
+            if(type == 1)
+            {
+                return _articleService.GetCurrentUtcTime();
+            }
+            else if(type == 2)
+            {
+                _articleService.DeleteSomething(1);
+                return "ok";
+            }
+            else if(type == 3)
+            {
+                return _articleService.PutSomething("123");
+            }
+            else
+            {
+                return "other";
+            }
+        }
     }
 }

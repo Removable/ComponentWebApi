@@ -27,5 +27,20 @@ namespace ComponentWebApi.Services.Articles
             // return new Page<Article>(list, queryable.Count(), pageIndex, pageSize);
             return queryable;
         }
+
+        public void DeleteSomething(int id)
+        {
+            System.Console.WriteLine("Handle delete something..");
+        }
+
+        public string GetCurrentUtcTime()
+        {
+            return System.DateTime.UtcNow.ToString();
+        }
+
+        public string PutSomething(string str)
+        {
+            return str;
+        }
     }
 }

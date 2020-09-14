@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using AspectCore.Configuration;
 using AspectCore.Extensions.DependencyInjection;
 using ComponentWebApi.Api.Extensions;
@@ -11,14 +5,14 @@ using ComponentWebApi.Api.Filter;
 using ComponentWebApi.Repository;
 using ComponentWebApi.Repository.Repositories;
 using ComponentWebApi.Repository.UnitOfWorks;
+using EasyCaching.InMemory;
+using EasyCaching.Interceptor.AspectCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace ComponentWebApi.Api
 {
@@ -52,6 +46,10 @@ namespace ComponentWebApi.Api
 
             // 設定動態代理
             services.ConfigureDynamicProxy(config => { config.Interceptors.AddTyped<ServiceAopAttribute>(Predicates.ForService("*Service")); });
+            
+            services.AddEasyCachingInmemory(Configuration);
+            
+            services.ConfigureAspectCoreInterceptor(options => options.CacheProviderName = "defaultJson");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

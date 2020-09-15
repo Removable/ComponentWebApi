@@ -17,7 +17,7 @@ namespace ComponentWebApi.Api.Extensions
         {
             #region 自动依赖注入
 
-            var baseType = typeof(IBaseService);
+            var baseType = typeof(IDependency);
             var path = AppDomain.CurrentDomain.RelativeSearchPath ?? AppDomain.CurrentDomain.BaseDirectory;
             var referencedAssemblies = System.IO.Directory.GetFiles(path, "*.dll").Select(Assembly.LoadFrom).ToArray();
             var types = referencedAssemblies

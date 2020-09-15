@@ -11,6 +11,7 @@ namespace ComponentWebApi.Services.Articles
         /// 获取所有博文的标题
         /// </summary>
         /// <returns></returns>
+        [EasyCachingAble(Expiration = 3600)]
         Task<List<Article>> GetAllArticlesTitle();
 
         // [EasyCachingAble(Expiration = 20)]

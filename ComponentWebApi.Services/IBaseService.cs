@@ -5,7 +5,7 @@ using EasyCaching.Core.Interceptor;
 
 namespace ComponentWebApi.Services
 {
-    public interface IBaseService<T, in TKey> where T : class, IEntity<TKey>, new()
+    public interface IBaseService<T, in TKey> : IDependency where T : class, IEntity<TKey>, new()
     {
         /// <summary>
         ///     根据ID查找
@@ -28,29 +28,32 @@ namespace ComponentWebApi.Services
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        [EasyCachingPut(CacheKeyPrefix = "Entity")]
-        abstract Task<bool> SaveAsync(T entity);
+        [EasyCachingPut]
+        abstract Task<T> SaveAsync(T entity);
 
         /// <summary>
         /// 保存
         /// </summary>
         /// <param name="entityList"></param>
         /// <returns></returns>
-        Task<bool> SaveAsync(List<T> entityList);
+        [EasyCachingPut]
+        Task<T[]> SaveAsync(List<T> entityList);
 
         /// <summary>
         ///     更新
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        Task<bool> UpdateAsync(T entity);
+        [EasyCachingPut]
+        Task<T> UpdateAsync(T entity);
 
         /// <summary>
         /// 更新
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        Task<bool> UpdateAsync(List<T> entity);
+        [EasyCachingPut]
+        Task<T[]> UpdateAsync(List<T> entity);
 
         /// <summary>
         ///     删除

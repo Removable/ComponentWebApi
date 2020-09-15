@@ -27,59 +27,59 @@ namespace ComponentWebApi.Services
             return await _repository.GetAsync(ids);
         }
 
-        public async Task<bool> SaveAsync(T entity)
+        public async Task<T> SaveAsync(T entity)
         {
             try
             {
-                _repository.Insert(entity);
+                var newEntity = _repository.Insert(entity);
                 var i = await _unitOfWork.SaveChangesAsync();
-                return i == 1;
+                return i > 0 ? newEntity : null;
             }
             catch //(Exception e)
             {
-                return false;
+                return null;
             }
         }
 
-        public async Task<bool> SaveAsync(List<T> entityList)
+        public async Task<T[]> SaveAsync(List<T> entityList)
         {
             try
             {
-                _repository.Insert(entityList.ToArray());
+                var newArray = _repository.Insert(entityList.ToArray());
                 var i = await _unitOfWork.SaveChangesAsync();
-                return i == entityList.Count;
+                return i > 0 ? newArray : null;
             }
             catch // (Exception e)
             {
-                return false;
+                return null;
             }
         }
 
-        public async Task<bool> UpdateAsync(T entity)
+        public async Task<T> UpdateAsync(T entity)
         {
             try
             {
-                _repository.Update(entity);
+                var newEntity = _repository.Update(entity);
                 var i = await _unitOfWork.SaveChangesAsync();
-                return i == 1;
+                return i > 0 ? newEntity : null;
             }
             catch //(Exception e)
             {
-                return false;
+                return null;
             }
         }
 
-        public async Task<bool> UpdateAsync(List<T> entity)
+        public async Task<T[]> UpdateAsync(List<T> entity)
         {
             try
             {
-                _repository.Update(entity.ToArray());
+                var newArray = _repository.Update(entity.ToArray());
                 var i = await _unitOfWork.SaveChangesAsync();
-                return i >= 1;
+                return i > 0 ? newArray : null;
             }
             catch //(Exception e)
             {
-                return false;
+                return null;
             }
         }
 
@@ -117,7 +117,7 @@ namespace ComponentWebApi.Services
             {
                 _repository.Delete(entity);
                 var i = await _unitOfWork.SaveChangesAsync();
-                return i == 1;
+                return i > 0;
             }
             catch //(Exception e)
             {

@@ -16,5 +16,10 @@ namespace ComponentWebApi.Model.Articles
         /// 标题
         /// </summary>
         public string Title { get; set; }
+        
+        /// <summary>
+        /// 正文
+        /// </summary>
+        public string Content { get; set; }
     }
 }

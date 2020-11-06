@@ -5,7 +5,6 @@ using ComponentWebApi.Api.Filter;
 using ComponentWebApi.Repository;
 using ComponentWebApi.Repository.Repositories;
 using ComponentWebApi.Repository.UnitOfWorks;
-using EasyCaching.InMemory;
 using EasyCaching.Interceptor.AspectCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace ComponentWebApi.Api
 {
@@ -28,38 +28,57 @@ namespace ComponentWebApi.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddCors(c =>
+            {
+                c.AddDefaultPolicy(policy =>
+                {
+                    // 支持多个域名端口，注意端口号后不要带/斜杆：比如localhost:8000/，是错的
+                    // http://127.0.0.1:1818 和 http://localhost:1818 是不一样的，尽量写两个
+                    policy
+                        .WithOrigins("http://localhost:3000")
+                        .WithOrigins("http://127.0.0.1:3000")
+                        .AllowAnyHeader() //允许任意头
+                        .AllowAnyMethod(); //允许任意方法
+                    // .WithExposedHeaders("act"); //允许自定义的act头信息
+                });
+            });
 
             //注入Uow依赖
             services.AddScoped<IUnitOfWork, UnitOfWork<MyDbContext>>();
             //注入泛型仓储
             services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
-            
+
             //依赖注入
             services.AddAutoDI();
-            
+
             //Swagger
             services.AddSwaggerSetup();
-            
+
             //注入DbContext
             services.AddDbContext<MyDbContext>(options => options.UseSqlite(Configuration["ConnectionStrings:Sqlite"]));
 
-            // 設定動態代理
-            services.ConfigureDynamicProxy(config => { config.Interceptors.AddTyped<ServiceAopAttribute>(Predicates.ForService("*Service")); });
-            
+            services.AddControllers().AddControllersAsServices();
+
+            //设置动态代理
+            services.ConfigureDynamicProxy(config =>
+            {
+                config.Interceptors.AddTyped<ServiceAopAttribute>(Predicates.ForService("*Service"));
+                config.Interceptors.AddTyped<ServiceAopAttribute>(Predicates.ForService("*Controller"));
+            });
+
             services.AddEasyCachingInmemory(Configuration);
-            
+
             services.ConfigureAspectCoreInterceptor(options => options.CacheProviderName = "defaultJson");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
@@ -68,7 +87,7 @@ namespace ComponentWebApi.Api
                 //路径配置，设置为空，表示直接在根域名（localhost:8001）访问该文件,注意localhost:8001/swagger是访问不到的，去launchSettings.json把launchUrl去掉，如果你想换一个路径，直接写名字即可，比如直接写c.RoutePrefix = "doc";
                 c.RoutePrefix = "doc";
             });
-            
+
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
@@ -76,10 +95,9 @@ namespace ComponentWebApi.Api
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            // 添加日志Provider
+            loggerFactory.AddLog4Net();
         }
     }
 }

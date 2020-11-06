@@ -1,7 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using ComponentUtil.Webs.Controllers;
 using ComponentWebApi.Model.Articles;
 using ComponentWebApi.Services.Articles;
+using EasyCaching.Core;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComponentWebApi.Api.Controllers
@@ -11,17 +14,38 @@ namespace ComponentWebApi.Api.Controllers
     /// </summary>
     public class ArticleController : WebApiControllerBase
     {
+        private readonly IEasyCachingProvider _easyCachingProvider;
         private readonly IArticleService _articleService;
 
-        public ArticleController(IArticleService articleService)
+        /// <summary>
+        /// Article控制器
+        /// </summary>
+        public ArticleController(IEasyCachingProvider easyCachingProvider, IArticleService articleService)
         {
+            _easyCachingProvider = easyCachingProvider;
             _articleService = articleService;
         }
 
+        /// <summary>
+        /// 获取所有文章列表
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAll()
+        public virtual async Task<IActionResult> GetAll()
         {
-            return Success(await _articleService.GetAllArticlesTitle());
+            try
+            {
+                throw new Exception("ArticleController.GetAll.异常");
+                //优先从缓存中获取
+                var cache = await _easyCachingProvider.GetAsync<List<Article>>("Article_IndexList");
+                var list = cache.HasValue ? cache.Value : await _articleService.GetAllArticlesTitle();
+
+                return Success(list);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
 
         [HttpGet("GetById")]

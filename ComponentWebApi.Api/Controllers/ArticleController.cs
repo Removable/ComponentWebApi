@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AutoMapper;
 using ComponentUtil.Webs.Controllers;
 using ComponentWebApi.Model.Articles;
 using ComponentWebApi.Services.Articles;
@@ -14,14 +15,17 @@ namespace ComponentWebApi.Api.Controllers
     /// </summary>
     public class ArticleController : WebApiControllerBase
     {
+        private readonly IMapper _mapper;
         private readonly IEasyCachingProvider _easyCachingProvider;
         private readonly IArticleService _articleService;
 
         /// <summary>
         /// Article控制器
         /// </summary>
-        public ArticleController(IEasyCachingProvider easyCachingProvider, IArticleService articleService)
+        public ArticleController(IMapper mapper, IEasyCachingProvider easyCachingProvider,
+            IArticleService articleService)
         {
+            _mapper = mapper;
             _easyCachingProvider = easyCachingProvider;
             _articleService = articleService;
         }
@@ -44,7 +48,7 @@ namespace ComponentWebApi.Api.Controllers
         }
 
         [HttpPost("SaveNew")]
-        public async Task<IActionResult> SaveNew(string title)
+        public virtual async Task<IActionResult> SaveNew(string title)
         {
             var article = await _articleService.SaveAsync(new Article
             {
@@ -53,8 +57,15 @@ namespace ComponentWebApi.Api.Controllers
             return Success(article);
         }
 
+        [HttpPost("Get")]
+        public virtual async Task<IActionResult> GetById(int id)
+        {
+            var article = await _articleService.GetByIdAsync(id);
+            return Success(_mapper.Map<ArticleVm>(article));
+        }
+
         [HttpPost("UpdateArticle")]
-        public async Task<IActionResult> UpdateArticle(int id, string title)
+        public virtual async Task<IActionResult> UpdateArticle(int id, string title)
         {
             var article = await _articleService.GetByIdAsync(id);
             article.Title = title;
@@ -63,7 +74,7 @@ namespace ComponentWebApi.Api.Controllers
         }
 
         [HttpPost("DelArticle")]
-        public async Task<IActionResult> DelArticle(int id)
+        public virtual async Task<IActionResult> DelArticle(int id)
         {
             var article = await _articleService.GetByIdAsync(id);
             await _articleService.DeleteAsync(article);

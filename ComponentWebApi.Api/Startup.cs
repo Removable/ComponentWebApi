@@ -48,6 +48,8 @@ namespace ComponentWebApi.Api
             //注入泛型仓储
             services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
 
+            services.AddAutoMapperProfiles(Configuration);
+            
             //依赖注入
             services.AddAutoDI();
 

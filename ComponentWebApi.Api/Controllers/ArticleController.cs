@@ -33,25 +33,14 @@ namespace ComponentWebApi.Api.Controllers
         [HttpGet("GetAll")]
         public virtual async Task<IActionResult> GetAll()
         {
-            try
-            {
-                throw new Exception("ArticleController.GetAll.异常");
-                //优先从缓存中获取
-                var cache = await _easyCachingProvider.GetAsync<List<Article>>("Article_IndexList");
-                var list = cache.HasValue ? cache.Value : await _articleService.GetAllArticlesTitle();
+            //优先从缓存中获取
+            var cache = await _easyCachingProvider.GetAsync<List<Article>>("Article_IndexList");
+            var list = cache.HasValue ? cache.Value : await _articleService.GetAllArticlesTitle();
 
-                return Success(list);
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-        }
+            //存入缓存
+            if (!cache.HasValue) await _easyCachingProvider.SetAsync("Article_IndexList", list, TimeSpan.FromDays(1));
 
-        [HttpGet("GetById")]
-        public async Task<IActionResult> GetById(int id)
-        {
-            return Success(await _articleService.GetByIdAsync(id));
+            return Success(list);
         }
 
         [HttpPost("SaveNew")]

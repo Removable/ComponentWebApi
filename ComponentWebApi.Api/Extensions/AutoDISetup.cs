@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using AutoMapper;
 using ComponentWebApi.Services;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -32,6 +33,8 @@ namespace ComponentWebApi.Api.Extensions
                 if (interfaceType != null)
                     services.AddScoped(interfaceType, implementType);
             }
+
+            services.AddScoped(typeof(IMapper), typeof(Mapper));
 
             #endregion
 

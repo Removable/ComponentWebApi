@@ -1,5 +1,6 @@
 using AspectCore.Configuration;
 using AspectCore.Extensions.DependencyInjection;
+using AutoMapper;
 using ComponentWebApi.Api.Extensions;
 using ComponentWebApi.Api.Filter;
 using ComponentWebApi.Repository;
@@ -49,7 +50,7 @@ namespace ComponentWebApi.Api
             services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
 
             services.AddAutoMapperProfiles(Configuration);
-            
+
             //依赖注入
             services.AddAutoDI();
 

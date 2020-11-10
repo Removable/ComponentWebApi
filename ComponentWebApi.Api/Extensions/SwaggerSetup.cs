@@ -20,7 +20,7 @@ namespace ComponentWebApi.Api.Extensions
                 c.SwaggerDoc("V1", new OpenApiInfo
                 {
                     Version = "V1",
-                    Title = $"{apiName} 接口文档——Netcore 3.1",
+                    Title = $"{apiName} 接口文档——.NET 5",
                     Description = $"{apiName} HTTP API V1",
                     Contact = new OpenApiContact
                         {Name = apiName, Email = "me@imguan.com", Url = new Uri("https://blog.imguan.com")},

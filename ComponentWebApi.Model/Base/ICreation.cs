@@ -2,6 +2,9 @@
 
 namespace ComponentWebApi.Model.Base
 {
+    /// <summary>
+    /// 创建相关属性接口
+    /// </summary>
     public interface ICreation
     {
         /// <summary>

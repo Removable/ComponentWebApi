@@ -52,7 +52,14 @@ namespace ComponentWebApi.Api.Controllers
         {
             var article = await _articleService.SaveAsync(new Article
             {
-                Title = title
+                Title = title,
+                Code = Guid.NewGuid().ToString("N"),
+                Content = "正文正文正文",
+                ContentPreview = "正文...",
+                CreationTime = DateTime.Now,
+                CreatorId = "",
+                LastModificationTime = DateTime.Now,
+                LastModifierId = ""
             });
             return Success(article);
         }

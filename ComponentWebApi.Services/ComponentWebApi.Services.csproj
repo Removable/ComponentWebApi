@@ -10,6 +10,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="ComponentUtil.Common" Version="0.3.0" />
       <PackageReference Include="EasyCaching.InMemory" Version="1.1.0-alpha20201025030445" />
       <PackageReference Include="EasyCaching.Interceptor.AspectCore" Version="1.1.0-alpha20201025030445" />
     </ItemGroup>

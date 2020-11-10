@@ -35,14 +35,9 @@ namespace ComponentWebApi.Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetAll")]
-        public virtual async Task<IActionResult> GetAll()
+        public virtual async Task<IActionResult> GetList(int current, int rows)
         {
-            //优先从缓存中获取
-            var cache = await _easyCachingProvider.GetAsync<List<Article>>("Article_IndexList");
-            var list = cache.HasValue ? cache.Value : await _articleService.GetAllArticlesTitle();
-
-            //存入缓存
-            if (!cache.HasValue) await _easyCachingProvider.SetAsync("Article_IndexList", list, TimeSpan.FromDays(1));
+            var list = await _articleService.GetAllArticlesTitle(current, rows);
 
             return Success(list);
         }

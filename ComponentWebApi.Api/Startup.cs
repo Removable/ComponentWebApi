@@ -60,7 +60,10 @@ namespace ComponentWebApi.Api
             //注入DbContext
             services.AddDbContext<MyDbContext>(options => options.UseSqlite(Configuration["ConnectionStrings:Sqlite"]));
 
-            services.AddControllers().AddControllersAsServices();
+            services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+            }).AddControllersAsServices();
 
             //设置动态代理
             services.ConfigureDynamicProxy(config =>
@@ -72,6 +75,9 @@ namespace ComponentWebApi.Api
             services.AddEasyCachingInmemory(Configuration);
 
             services.ConfigureAspectCoreInterceptor(options => options.CacheProviderName = "defaultJson");
+
+            //JWT验证
+            services.AddJwtBearer(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -96,6 +102,9 @@ namespace ComponentWebApi.Api
 
             app.UseRouting();
 
+            app.UseCors();
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });

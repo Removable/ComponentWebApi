@@ -6,6 +6,7 @@ using ComponentUtil.Webs.Controllers;
 using ComponentWebApi.Model.Articles;
 using ComponentWebApi.Services.Articles;
 using EasyCaching.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ComponentWebApi.Api.Controllers
@@ -13,6 +14,7 @@ namespace ComponentWebApi.Api.Controllers
     /// <summary>
     /// Article控制器
     /// </summary>
+    [Authorize]
     public class ArticleController : WebApiControllerBase
     {
         private readonly IMapper _mapper;
@@ -34,8 +36,9 @@ namespace ComponentWebApi.Api.Controllers
         /// 获取所有文章列表
         /// </summary>
         /// <returns></returns>
+        [AllowAnonymous]
         [HttpGet("GetAll")]
-        public virtual async Task<IActionResult> GetList(int current, int rows)
+        public virtual async Task<IActionResult> GetList(int current = 1, int rows = 5)
         {
             var list = await _articleService.GetAllArticlesTitle(current, rows);
 
@@ -59,6 +62,7 @@ namespace ComponentWebApi.Api.Controllers
             return Success(article);
         }
 
+        [AllowAnonymous]
         [HttpPost("Get")]
         public virtual async Task<IActionResult> GetById(int id)
         {

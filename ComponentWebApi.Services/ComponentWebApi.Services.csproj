@@ -5,6 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ComponentWebApi.Common\ComponentWebApi.Common.csproj" />
       <ProjectReference Include="..\ComponentWebApi.Model\ComponentWebApi.Model.csproj" />
       <ProjectReference Include="..\ComponentWebApi.Repository\ComponentWebApi.Repository.csproj" />
     </ItemGroup>
@@ -13,6 +14,7 @@
       <PackageReference Include="ComponentUtil.Common" Version="0.3.0" />
       <PackageReference Include="EasyCaching.InMemory" Version="1.1.0-alpha20201025030445" />
       <PackageReference Include="EasyCaching.Interceptor.AspectCore" Version="1.1.0-alpha20201025030445" />
+      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.7.1" />
     </ItemGroup>
 
 </Project>

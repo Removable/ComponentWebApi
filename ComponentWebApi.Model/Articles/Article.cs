@@ -6,7 +6,7 @@ namespace ComponentWebApi.Model.Articles
     /// <summary>
     /// 文章
     /// </summary>
-    public class Article : IEntity<int>, ICreation
+    public class Article : BaseEntity
     {
         /// <summary>
         /// ID

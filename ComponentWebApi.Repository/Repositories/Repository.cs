@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ComponentWebApi.Repository.Repositories
 {
-    public class Repository<TEntity, TKey> : IRepository<TEntity, TKey>
-        where TEntity : class, IEntity<TKey>
+    public class Repository<TEntity> : IRepository<TEntity>
+        where TEntity : BaseEntity
     {
         private readonly MyDbContext _dbContext;
 
@@ -18,12 +18,12 @@ namespace ComponentWebApi.Repository.Repositories
 
         protected DbSet<TEntity> Table => _dbContext.Set<TEntity>();
 
-        public async Task<TEntity> GetAsync(TKey id)
+        public async Task<TEntity> GetAsync(int id)
         {
             return await Table.FindAsync(id);
         }
 
-        public async Task<TEntity[]> GetAsync(TKey[] ids)
+        public async Task<TEntity[]> GetAsync(int[] ids)
         {
             return await Table.Where(i => ids.Contains(i.Id)).ToArrayAsync();
         }
@@ -81,7 +81,7 @@ namespace ComponentWebApi.Repository.Repositories
             }
         }
 
-        public async Task Delete(TKey id)
+        public async Task Delete(int id)
         {
             var entity = GetFromChangeTrackerOrNull(id);
             if (entity != null)
@@ -97,7 +97,7 @@ namespace ComponentWebApi.Repository.Repositories
             }
         }
 
-        public async Task Delete(params TKey[] ids)
+        public async Task Delete(params int[] ids)
         {
             var entityArray = GetFromChangeTrackerOrNull(ids).ToArray();
             if (entityArray.Length > 0)
@@ -128,21 +128,21 @@ namespace ComponentWebApi.Repository.Repositories
 
         protected virtual void AttachIfNot(TEntity[] entityArray)
         {
-            var entryList = _dbContext.ChangeTracker.Entries().Where(ent => entityArray.Contains((TEntity)ent.Entity));
+            var entryList = _dbContext.ChangeTracker.Entries().Where(ent => entityArray.Contains((TEntity) ent.Entity));
             if (!entryList.Any()) return;
 
             Table.AttachRange(entityArray);
         }
 
-        private TEntity GetFromChangeTrackerOrNull(TKey id)
+        private TEntity GetFromChangeTrackerOrNull(int id)
         {
             var entry = _dbContext.ChangeTracker.Entries().FirstOrDefault(ent =>
-                ent.Entity is TEntity entity && EqualityComparer<TKey>.Default.Equals(id, entity.Id));
+                ent.Entity is TEntity entity && EqualityComparer<int>.Default.Equals(id, entity.Id));
 
             return entry?.Entity as TEntity;
         }
 
-        private IEnumerable<TEntity> GetFromChangeTrackerOrNull(TKey[] ids)
+        private IEnumerable<TEntity> GetFromChangeTrackerOrNull(int[] ids)
         {
             var entryEnumerable = _dbContext.ChangeTracker.Entries()
                 .Where(ent => ent.Entity is TEntity entity && ids.Contains(entity.Id));

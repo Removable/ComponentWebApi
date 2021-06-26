@@ -6,23 +6,23 @@ using ComponentWebApi.Repository.UnitOfWorks;
 
 namespace ComponentWebApi.Services
 {
-    public abstract class BaseService<T, TKey> : IBaseService<T, TKey> where T : class, IEntity<TKey>, new()
+    public abstract class BaseService<T> : IBaseService<T> where T : BaseEntity, new()
     {
         protected readonly IUnitOfWork _unitOfWork;
-        protected readonly IRepository<T, TKey> _repository;
+        protected readonly IRepository<T> _repository;
 
-        protected BaseService(IUnitOfWork unitOfWork, IRepository<T, TKey> repository)
+        protected BaseService(IUnitOfWork unitOfWork, IRepository<T> repository)
         {
             _repository = repository;
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<T> GetByIdAsync(TKey id)
+        public async Task<T> GetByIdAsync(int id)
         {
             return await _repository.GetAsync(id);
         }
 
-        public async Task<T[]> GetByIdAsync(params TKey[] ids)
+        public async Task<T[]> GetByIdAsync(params int[] ids)
         {
             return await _repository.GetAsync(ids);
         }
@@ -83,7 +83,7 @@ namespace ComponentWebApi.Services
             }
         }
 
-        public async Task<bool> DeleteAsync(TKey id)
+        public async Task<bool> DeleteAsync(int id)
         {
             try
             {
@@ -97,7 +97,7 @@ namespace ComponentWebApi.Services
             }
         }
 
-        public async Task<bool> DeleteAsync(params TKey[] ids)
+        public async Task<bool> DeleteAsync(params int[] ids)
         {
             try
             {

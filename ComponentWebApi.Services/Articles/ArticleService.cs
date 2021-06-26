@@ -12,12 +12,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ComponentWebApi.Services.Articles
 {
-    public class ArticleService : BaseService<Article, int>, IArticleService
+    public class ArticleService : BaseService<Article>, IArticleService
     {
         private readonly IEasyCachingProvider _easyCaching;
         private readonly IMapper _mapper;
 
-        public ArticleService(IUnitOfWork unitOfWork, IRepository<Article, int> repository,
+        public ArticleService(IUnitOfWork unitOfWork, IRepository<Article> repository,
             IEasyCachingProvider easyCaching, IMapper mapper) : base(unitOfWork, repository)
         {
             _easyCaching = easyCaching;

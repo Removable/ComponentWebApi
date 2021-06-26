@@ -47,7 +47,7 @@ namespace ComponentWebApi.Api
             //注入Uow依赖
             services.AddScoped<IUnitOfWork, UnitOfWork<MyDbContext>>();
             //注入泛型仓储
-            services.AddScoped(typeof(IRepository<,>), typeof(Repository<,>));
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
             services.AddAutoMapperProfiles(Configuration);
 
@@ -58,7 +58,7 @@ namespace ComponentWebApi.Api
             services.AddSwaggerSetup();
 
             //注入DbContext
-            services.AddDbContext<MyDbContext>(options => options.UseSqlite(Configuration["ConnectionStrings:Sqlite"]));
+            services.AddDbContext<MyDbContext>(options => options.UseSqlServer(Configuration["ConnectionStrings:SqlServer"]));
 
             services.AddControllers().AddJsonOptions(options =>
             {

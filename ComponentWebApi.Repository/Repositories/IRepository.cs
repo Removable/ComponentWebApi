@@ -4,11 +4,11 @@ using ComponentWebApi.Model.Base;
 
 namespace ComponentWebApi.Repository.Repositories
 {
-    public interface IRepository<TEntity, in TKey> where TEntity : class, IEntity<TKey>
+    public interface IRepository<TEntity> where TEntity : BaseEntity
     {
-        Task<TEntity> GetAsync(TKey id);
+        Task<TEntity> GetAsync(int id);
         
-        Task<TEntity[]> GetAsync(TKey[] ids);
+        Task<TEntity[]> GetAsync(int[] ids);
 
         TEntity Insert(TEntity entity);
 
@@ -22,9 +22,9 @@ namespace ComponentWebApi.Repository.Repositories
 
         void Delete(TEntity[] entityArray);
 
-        Task Delete(TKey id);
+        Task Delete(int id);
 
-        Task Delete(params TKey[] ids);
+        Task Delete(params int[] ids);
 
         IQueryable<TEntity> GetAll();
     }

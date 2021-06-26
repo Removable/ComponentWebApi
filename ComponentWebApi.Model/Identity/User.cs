@@ -5,7 +5,7 @@ namespace ComponentWebApi.Model.Identity
     /// <summary>
     /// 用户
     /// </summary>
-    public class User: IEntity<int>
+    public class User: BaseEntity
     {
         /// <summary>
         /// 主键

@@ -14,7 +14,7 @@ namespace ComponentWebApi.Api.Controllers
     /// <summary>
     /// 公司信息
     /// </summary>
-    public class CompanyController : WebApiControllerBase
+    public class CompanyController : BaseController
     {
         private readonly ICompanyService _companyService;
 

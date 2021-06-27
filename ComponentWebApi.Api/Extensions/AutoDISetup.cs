@@ -20,7 +20,7 @@ namespace ComponentWebApi.Api.Extensions
 
             var baseType = typeof(IDependency);
             var path = AppDomain.CurrentDomain.RelativeSearchPath ?? AppDomain.CurrentDomain.BaseDirectory;
-            var referencedAssemblies = System.IO.Directory.GetFiles(path, "*.dll").Select(Assembly.LoadFrom).ToArray();
+            var referencedAssemblies = System.IO.Directory.GetFiles(path, "Component*.dll").Select(Assembly.LoadFrom).ToArray();
             var types = referencedAssemblies
                 .SelectMany(a => a.DefinedTypes)
                 .Select(type => type.AsType())

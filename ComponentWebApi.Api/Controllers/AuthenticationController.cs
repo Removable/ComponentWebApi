@@ -8,7 +8,7 @@ namespace ComponentWebApi.Api.Controllers
     /// <summary>
     /// 身份验证控制器
     /// </summary>
-    public class AuthenticationController : WebApiControllerBase
+    public class AuthenticationController : BaseController
     {
         private readonly IAuthenticateService _authenticateService;
 

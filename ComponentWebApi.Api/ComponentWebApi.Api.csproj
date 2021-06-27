@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\ArticleController.cs" />
+    <Compile Remove="Controllers\AuthenticationController.cs" />
   </ItemGroup>
 
 

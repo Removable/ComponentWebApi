@@ -11,10 +11,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="ComponentUtil.Common" Version="0.3.2" />
-      <PackageReference Include="EasyCaching.InMemory" Version="1.2.0-alpha20201214003208" />
-      <PackageReference Include="EasyCaching.Interceptor.AspectCore" Version="1.2.0-alpha20201214003208" />
-      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.8.0" />
+      <PackageReference Include="ComponentUtil.Common" Version="0.3.7" />
+      <PackageReference Include="EasyCaching.InMemory" Version="1.4.0" />
+      <PackageReference Include="EasyCaching.Interceptor.AspectCore" Version="1.4.0" />
+      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.12.0" />
     </ItemGroup>
 
 </Project>
